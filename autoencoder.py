@@ -26,7 +26,7 @@ class Encoder(nn.Module):
         for i in range(_n_modules):
             self.encoder.add_module(
                 name=f"ConvBlock-{ceil(input_size/(2**i))}->{ceil(input_size/(2**(i+1)))}-" + str(i),
-                module=self._conv_block((2**i)*hidden_channels, (2**(i+1))*hidden_channels)
+                module=Encoder._conv_block((2**i)*hidden_channels, (2**(i+1))*hidden_channels)
             )
 
         # This is what we get after the convolutions
@@ -41,8 +41,8 @@ class Encoder(nn.Module):
             nn.Linear(hidden_size*hidden_size*hidden_channels, bottleneck_dim),
         ))
 
-
-    def _conv_block(self, input_channels:int, output_channels:int) -> nn.Sequential:
+    @staticmethod
+    def _conv_block(input_channels:int, output_channels:int) -> nn.Sequential:
         return nn.Sequential(
             nn.Conv2d(input_channels, output_channels, kernel_size=3, stride=2, padding=1),
             nn.ReLU(),
@@ -143,5 +143,5 @@ if __name__ == "__main__":
     print(ae)
     noise = torch.rand(img_shape)
     out = ae(noise)
-    print(out.shape, "OK!" if noise.shape == out.shape else f"\nWARNING: Output shape differs from input shape. Should have been: {noise.shape}")
     print(out)
+    print(out.shape, "OK!" if noise.shape == out.shape else f"\nWARNING: Output shape differs from input shape. Should have been: {noise.shape}")

@@ -11,26 +11,7 @@ from pan_radiographs_data import FullRadiographDataset
 from tqdm import tqdm
 
 from autoencoder import Autoencoder
-
-def save_checkpoint(
-        filename: str,
-        model: torch.nn.modules.module.Module,
-        optimizer: torch.optim.Optimizer,
-        current_epoch: int # In order to know how many epochs the model has been trained for
-    ) -> None:
-
-    if not filename.endswith(".pt"):
-        filename += ".pt"
-
-    print(f"Saving checkpoing to file '{filename}'...", end='')
-    checkpoint = {
-        "state_dict": model.state_dict,
-        "optmizer": optimizer.state_dict,
-        "epoch": current_epoch
-    }
-    torch.save(checkpoint, filename)
-    print("Saved.")
-
+from utils import *
 
 if __name__ == "__main__":
     root_dir = "/datasets/pan-radiographs/"
@@ -73,7 +54,7 @@ if __name__ == "__main__":
     for epoch in range(epochs):
         for x, _ in tqdm(train_loader, desc=f"[Epoch {epoch}/{epochs}]"):
             x = x.to(device)
-            
+
             x_hat = model(x)
             loss = criterion(x_hat, x)
 
